@@ -11,7 +11,7 @@ public class Lemma {
 
 	public static void main(String[] args) throws IOException {
 
-		String path = "/Users/Alex/Downloads/lemmatization-es.txt";
+		String path = System.getProperty("user.dir") + "/lemmatization-es.txt";
 	    HashMap<String, String> map = new HashMap<String, String>();
 
 	    String line;

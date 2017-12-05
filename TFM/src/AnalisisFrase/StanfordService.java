@@ -29,8 +29,7 @@ import edu.stanford.nlp.util.PropertiesUtils;
 
 public class StanfordService {
 
-	public ArrayList<String> parser(String text){
-		ArrayList<String> result = new ArrayList<>();
+	public StanfordCoreNLP initializeStanford(){
 		StanfordCoreNLP pipeline = new StanfordCoreNLP(
 				PropertiesUtils.asProperties(
 					"annotators", "tokenize, ssplit, pos, parse",
@@ -40,7 +39,11 @@ public class StanfordService {
 					"pos.model", "edu/stanford/nlp/models/pos-tagger/spanish/spanish-distsim.tagger",
 					"parse.model", "edu/stanford/nlp/models/lexparser/spanishPCFG.ser.gz",
 					"tokenize.language", "es"));
-		
+		return pipeline;
+	}
+	
+	public ArrayList<String> parser(StanfordCoreNLP pipeline, String text){
+		ArrayList<String> result = new ArrayList<>();
 		Annotation document = new Annotation(text);
 		pipeline.annotate(document);
 		List<CoreMap> sentences = document.get(SentencesAnnotation.class);
