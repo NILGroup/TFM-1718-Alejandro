@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
+import Model.Identificador;
+
 public class DatabaseConnection {
 
 	private Connection conexion = null;
@@ -37,14 +39,60 @@ public class DatabaseConnection {
             JOptionPane.showMessageDialog(null, ex, "Error en la conexión a la base de datos: " + ex.getMessage(), JOptionPane.ERROR_MESSAGE);
             conexion = null;
         } finally {
-            JOptionPane.showMessageDialog(null, "Conexión Exitosa");
+            //JOptionPane.showMessageDialog(null, "Conexión Exitosa");
             return conexion;
         }
     }
     
-    public void nGrama (Connection con, ArrayList<String> content){
-    	int n = content.size();
-    	
+    public ArrayList<Identificador> nGrama (Connection con, String content) throws SQLException{
+    	String[] phrase = content.split(" ");
+    	boolean find, end= false;
+    	int elementIndex = phrase.length;
+    	int i=0;
+    	ArrayList<Identificador> result = new ArrayList<Identificador>();
+    	while(i<phrase.length && !end){
+    		int j=i;
+    		String res = "";
+    		String aux = "";
+    		Identificador ident;
+    		find = true;
+    		while(j< phrase.length && find){
+	            if(j==i){
+	            	ident = new Identificador(i);
+	            	res = res + phrase[j];
+	            	aux = "=";
+	            }
+	            else{
+	            	res = res + " " + phrase[j] + "%";
+	            	ident = result.get(result.size()-1);
+	            	aux = "LIKE";
+	            }
+	    		String query = "SELECT id_url FROM palabras,pictogramas where palabras.nombre " + aux + " '" + res + "' and palabras.id_url = pictogramas.id_pictograma";
+	    		comando = con.createStatement();
+	            registro = comando.executeQuery(query);
+	            if(!registro.next()){
+	            	if(result.size()==0){
+	            		result.add(ident);
+	            	}        	
+	            	find = false;
+	            	i=ident.getId()+1;
+	            	elementIndex = phrase.length-ident.getId()-1;
+	            }
+	            else{
+	            	ident.cleanId_url();
+	            	ident.setId(j);
+	            	while(registro.next()){
+	            		ident.setId_url(registro.getString(1));
+	            	}
+	            	result.add(ident);
+	            	j++;
+	            }   
+    		}
+    		if(j==phrase.length){
+    			end = true;
+    		}
+    	}
+    	return result;
     }
     
     public static void main(String[] args) throws SQLException {
@@ -52,20 +100,22 @@ public class DatabaseConnection {
 		DatabaseConnection db = new DatabaseConnection();
 	    db.MySQLConnect();
 	     
-	    String NombreDB = "palabras";
-        
-        String Query = "SELECT * FROM " + NombreDB + " where id_palabra = 1";
-        
+	    //nGrama(db.conexion,"Acompañar el filete de tenera con agua");
+	    /*String NombreDB = "palabras";
+        String palabra = "aguass";
+        String Query = "SELECT url FROM palabras,pictogramas where palabras.nombre = '"+ palabra+"' and palabras.id_url = pictogramas.id_pictograma";
+        System.out.println(Query);
         
         db.comando = db.conexion.createStatement();
         db.registro = db.comando.executeQuery(Query);
         
+        
         while (db.registro.next()) {
             
-            System.out.println(db.registro.getString(2));
+            System.out.println(db.registro.getString(1));
             
             System.out.println("------------------------------------------");
-        }
+        }*/
 	}
 
 }

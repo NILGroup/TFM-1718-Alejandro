@@ -1,4 +1,4 @@
-package AnalisisFrase;
+package PhraseAnalysis;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,25 +48,24 @@ public class StanfordService {
 		pipeline.annotate(document);
 		List<CoreMap> sentences = document.get(SentencesAnnotation.class);
 		for(CoreMap sentence: sentences) {
-			  // traversing the words in the current sentence
-			  // a CoreLabel is a CoreMap with additional token-specific methods
-			  for (CoreLabel token: sentence.get(TokensAnnotation.class)) {
-			    // this is the text of the token
+			// traversing the words in the current sentence
+			// a CoreLabel is a CoreMap with additional token-specific methods
+			for (CoreLabel token: sentence.get(TokensAnnotation.class)) {
+				// this is the text of the token
 			    String word = token.get(TextAnnotation.class);
 			    // this is the POS tag of the token
 			    String pos = token.get(PartOfSpeechAnnotation.class);
 			    // this is the NER label of the token
 			    //String ne = token.get(NamedEntityTagAnnotation.class);
 			    result.add(word+" "+pos);
-			  }
+			}
 		}
 		return result;
-		
 	}
 	
 	
 	public static void main(String[] args) {
-		long startTime = System.nanoTime();
+		
 		StanfordCoreNLP pipeline = new StanfordCoreNLP(
 				PropertiesUtils.asProperties(
 					"annotators", "tokenize, ssplit, pos, parse",
@@ -78,7 +77,7 @@ public class StanfordService {
 					"tokenize.language", "es"));
 
 			// read some text in the text variable
-			String text = "La mayoría sabían lo que pasaba pero muchos se negaban a reconocerlo."; // Add your text here!
+			String text = "Al lado de ellos vimos a varias mujeres mayores hablando de las elecciones entretenidamente. Pompas de jabón estallaban continuamente sobre la bañera, mientras que el niño perplejo las miraba."; // Add your text here!
 			//String text=""; -> Controlar cuando da error
 			/*String text = "En un lugar de la Mancha, de cuyo nombre no quiero acordarme, "
 					+ "no ha mucho tiempo que vivía un hidalgo de los de lanza en astillero, "
@@ -96,7 +95,7 @@ public class StanfordService {
 					+ "aunque por conjeturas verosímiles se deja entender que se llama Quijana; "
 					+ "pero esto importa poco a nuestro cuento; basta que en la narración dél no "
 					+ "se salga un punto de la verdad.";*/
-			
+			long startTime = System.nanoTime();
 			Annotation document = new Annotation(text);
 			// run all Annotators on this text
 			pipeline.annotate(document);
@@ -119,9 +118,9 @@ public class StanfordService {
 			  
 			  // this is the parse tree of the current sentence
 			 Tree tree = sentence.get(TreeAnnotation.class);
-			 ArrayList<String> resultado = new ArrayList<>();
-			 //resultado = parserTree(resultado,tree);
-			 /*for(int i=0; i<resultado.size();i++){
+			 /*ArrayList<String> resultado = new ArrayList<>();
+			 resultado = parserTree(resultado,tree);
+			 for(int i=0; i<resultado.size();i++){
 				 System.out.println(resultado.get(i));
 			 }*/
 			 System.out.println(tree);
@@ -134,7 +133,7 @@ public class StanfordService {
 
 	}
 	
-	/*public static ArrayList<String> parserTree(ArrayList<String> res, Tree t){
+	public static ArrayList<String> parserTree(ArrayList<String> res, Tree t){
 		if(t.depth()!=0){
 			for(Tree child: t.children()){
 				if(child.depth()==1){
@@ -146,5 +145,5 @@ public class StanfordService {
 		}
 		
 		return res;
-	}*/
+	}
 }

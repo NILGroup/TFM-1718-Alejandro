@@ -1,4 +1,4 @@
-package AnalisisFrase;
+package PhraseAnalysis;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,7 +26,8 @@ public class ExecuteScript {
 		return result;
 	}
 	public static void main(String[] args) throws IOException {
-		String frase = "llegaría a casa. Utensilio de cocina";
+		long startTime = System.nanoTime();
+		String frase = "Al lado de ellos vimos a varias mujeres mayores hablando de las elecciones entretenidamente. Pompas de jabón estallaban continuamente sobre la bañera, mientras que el niño perplejo las miraba.";
 		String[] cmd = {"python","/Users/Alex/Desktop/prueba.py",frase.toLowerCase()};
 		Process p = Runtime.getRuntime().exec(cmd);
 		String s = null;
@@ -42,7 +43,8 @@ public class ExecuteScript {
         while ((s = stdError.readLine()) != null) {
             System.out.println(s);
         }
-        
+        long endTime = System.nanoTime();
+		System.out.println("Duración: " + (endTime-startTime)/1e6 + " ms");
 		/*PythonInterpreter interpreter = new PythonInterpreter(null, new PySystemState());
 		PySystemState sys = Py.getSystemState();
 		System.out.println(sys);
