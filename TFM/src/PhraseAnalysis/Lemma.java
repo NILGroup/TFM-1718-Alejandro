@@ -50,17 +50,18 @@ public class Lemma {
 		}
 	}
 	////
-	public String checkLemma(HashMap<String, String> map, String word, String res){
+	public String checkLemma(HashMap<String, String> map, String word, String tag){
+		String res="";
 		if(map.containsKey(word)){
-			res = res + map.get(word) + " ";
+			res = map.get(word) + " " + tag;
 		}else{
-			res = res + "? ";
+			res = res + "? " + tag;
 		}
 		return res;
 	}
 	///
-	public String lemmatization(HashMap<String, String> map, ArrayList<String> phrase){
-		String res = "";
+	public ArrayList<String> lemmatization(HashMap<String, String> map, ArrayList<String> phrase){
+		ArrayList<String> res = new ArrayList<String>();
 		for(int i=0; i<phrase.size();i++){
 			String[] aux = phrase.get(i).split(" ");
 			String word = aux[0].toLowerCase();
@@ -68,20 +69,20 @@ public class Lemma {
 			switch(tag.charAt(0)){
 				case 'n': 
 					if (tag.equalsIgnoreCase("ncp")){
-						res = checkLemma(map,word,res);
+						res.add(checkLemma(map,word,tag));
 					}else{
-						res = res + word + " ";
+						res.add(word + " " + tag);
 					} break;
 				case 'v': 
 					if(tag.equalsIgnoreCase("van")||tag.equalsIgnoreCase("vmn")||tag.equalsIgnoreCase("vsn")){
-						res = res + word + " ";
+						res.add(word + " " + tag);
 					}else{
-						res = checkLemma(map,word,res);
+						res.add(checkLemma(map,word,tag));
 					}break;
 				case 'a': 
-					res = checkLemma(map,word,res);
+					res.add(checkLemma(map,word,tag));
 					break;
-				default: res = res + word + " "; break;
+				default: res.add(word + " " + tag); break;
 			}
 			/*if(tag.charAt(0)=='n' || tag.charAt(0)=='v' || tag.charAt(0)=='a'){
 				if(checkLemma(map, word)){
