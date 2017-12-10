@@ -61,14 +61,14 @@ public class DatabaseConnection {
     		Collections.sort(cUs);
     		String lastTag = cUs.get(cUs.size()-1).getTag();
     		String penultimateTag = "";
-    		char firstCharacterLT = lastTag.charAt(0);
-    		char firstCharacterPT = ' ';
+    		//char firstCharacterLT = lastTag.charAt(0);
+    		//char firstCharacterPT = ' ';
     		int back=1;
-    		if(firstCharacterLT=='c' || firstCharacterLT=='d'|| firstCharacterLT=='f' || firstCharacterLT=='s'){
+    		if(lastTag.equalsIgnoreCase("conj") || lastTag.equalsIgnoreCase("det")|| lastTag.equalsIgnoreCase("punct") || lastTag.equalsIgnoreCase("adp")){
     			for(int i=cUs.size()-2; i>=0; i--){
     				penultimateTag = cUs.get(i).getTag();
-    				firstCharacterPT = penultimateTag.charAt(0);
-    				if(firstCharacterPT=='a' || firstCharacterPT=='n' || firstCharacterPT=='v'){
+    				//firstCharacterPT = penultimateTag.charAt(0);
+    				if(penultimateTag.equalsIgnoreCase("adj") || penultimateTag.equalsIgnoreCase("noun") || penultimateTag.equalsIgnoreCase("verb") || penultimateTag.equalsIgnoreCase("propn")){
         				ident.setFinalVersion(cUs.get(i).getId());
         				ident.setId(ident.getId()-back);
         			}else{
@@ -84,7 +84,6 @@ public class DatabaseConnection {
     public ArrayList<Identificador> nGrama (Connection con, ArrayList<String> content) throws SQLException{
     	ArrayList<Identificador> result = new ArrayList<Identificador>();
     	boolean find, end= false;
-    	//int elementIndex = content.size();
     	int i=0;
     	while(i<content.size() && !end){
     		int j=i;
@@ -104,26 +103,19 @@ public class DatabaseConnection {
 	            }
 	            else{
 	            	//Cuando se trata de signos de puntuación han de ir junto con la palabra
-	            	if(tag.charAt(0)=='f'){
+	            	if(tag.equalsIgnoreCase("punct")){
 	            		res = res + "%" + word + "%";
 	            	}
 	            	else{
 	            		res = res + "% " + word + "%";
 	            	}
-	            	//ident = result.get(result.size()-1);
 	            	aux = "LIKE";
 	            }
 	            String query = "SELECT id_url FROM palabras,pictogramas where palabras.nombre " + aux + " '" + res + "' and palabras.id_url = pictogramas.id_pictograma";
 	    		comando = con.createStatement();
 	            registro = comando.executeQuery(query);
-	            if(!registro.next()){
-	            	/*if(result.size()==0){
-	            		result.add(ident);
-	            	} */       	
+	            if(!registro.next()){    	
 	            	find = false;
-	            	//checkNGramaCorrect(ident);
-	            	//i=ident.getId()+1;
-	            	//elementIndex = content.size()-ident.getId()-1;
 	            }else{
 	            	ident.setId(j);
 	            	ArrayList<String> urls = new ArrayList<String>();
@@ -131,10 +123,7 @@ public class DatabaseConnection {
 	            	while(registro.next()){
 	            		urls.add(registro.getString(1));
 	            	}
-	            	//No es esto lo que quiero, tiene que checkear la version y en caso contrario volver al i correspondiente
 	            	ident.setId_url(version,tag,urls);
-	            	//result.set tener en cuenta cuando se repita el mismo valor 
-	            	//result.add(ident);
 	            	version++;
 	            	j++;
 	            }
@@ -148,7 +137,8 @@ public class DatabaseConnection {
     	}
     	return result;
     }
-            	
+    
+    
     
     public static void main(String[] args) throws SQLException {
 		

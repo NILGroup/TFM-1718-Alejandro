@@ -54,7 +54,7 @@ public class Execute {
 		
 		*/
 		
-		String phrase = "Los niños, van de excursión a ver los fuegos artificiales.";
+		String phrase = "Acompañó el filete de carne mientras que los niños ven los fuegos artificales";
 		DatabaseConnection dC = new DatabaseConnection();
 		Connection conBD = dC.MySQLConnect();
 		
@@ -67,11 +67,12 @@ public class Execute {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
 		time_end_exec_Spacy = System.currentTimeMillis();
 		System.out.println("The Spacy execution has taken "+ ( time_end_exec_Spacy - time_start_exec_Spacy ) +" milliseconds");
 		
-		
+		for(int i=0; i<processedPhrase.size(); i++){
+			System.out.println(processedPhrase.get(i));
+		}
 		
 		
 		time_start_exec_NGrama = System.currentTimeMillis();
@@ -88,6 +89,9 @@ public class Execute {
 		for(int j=0; j<res.size();j++){
 			finalVersion = res.get(j).getFinalVersion();
 			Iterator it = res.get(j).getId_url().entrySet().iterator();
+			if(!it.hasNext()){
+				System.out.println("No he encontrado la palabra");
+			}
 			while (it.hasNext()) {
     		    Map.Entry e = (Map.Entry)it.next();
     		    ClaveUrls cU = (ClaveUrls) e.getKey();
