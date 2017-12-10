@@ -103,7 +103,8 @@ public class DatabaseConnection {
 	            	aux = "=";
 	            }
 	            else{
-	            	if(tag.equalsIgnoreCase("fc")){
+	            	//Cuando se trata de signos de puntuación han de ir junto con la palabra
+	            	if(tag.charAt(0)=='f'){
 	            		res = res + "%" + word + "%";
 	            	}
 	            	else{

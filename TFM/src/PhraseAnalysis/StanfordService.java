@@ -77,7 +77,7 @@ public class StanfordService {
 					"tokenize.language", "es"));
 
 			// read some text in the text variable
-			String text = "Al lado de ellos vimos a varias mujeres mayores hablando de las elecciones entretenidamente. Pompas de jabón estallaban continuamente sobre la bañera, mientras que el niño perplejo las miraba."; // Add your text here!
+			String text = "La casa roja está entre el sur y el este"; // Add your text here!
 			//String text=""; -> Controlar cuando da error
 			/*String text = "En un lugar de la Mancha, de cuyo nombre no quiero acordarme, "
 					+ "no ha mucho tiempo que vivía un hidalgo de los de lanza en astillero, "
