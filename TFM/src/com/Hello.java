@@ -6,7 +6,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 //http://localhost:8080/TFM/rest1/hello/hola
-@Path("/hello")
+/*@Path("/hello")
 public class Hello {
 
 	@GET
@@ -22,4 +22,4 @@ public class Hello {
 
 	}
 
-}
+}*/

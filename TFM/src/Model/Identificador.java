@@ -39,9 +39,20 @@ public class Identificador {
 		return id_url;
 	}
 
-	public void setId_url(int version, String tag, ArrayList<String> urls) {
-		ClaveUrls cU = new ClaveUrls(version, tag);
+	/*public void setId_url(int version, String tag, String originalWord, ArrayList<String> urls) {
+		ClaveUrls cU = new ClaveUrls(version, tag, originalWord);
+		this.id_url.put(cU, urls);
+	}*/
+	
+	public void setId_url(int version, String tag, String originalWord, String modifiedWord, ArrayList<String> urls) {
+		ClaveUrls cU = new ClaveUrls(version, tag, originalWord, modifiedWord);
 		this.id_url.put(cU, urls);
 	}
+	
+	public void setUrls(ClaveUrls cU, ArrayList<String> urls){
+		this.id_url.put(cU, urls);
+	}
+	
+	
 	
 }

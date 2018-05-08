@@ -1,6 +1,7 @@
 package PhraseAnalysis;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -20,17 +21,25 @@ import BD.DatabaseConnection;
 
 public class ExecuteScript {
 	
-	public ArrayList<String> analyser(Connection con, String text) throws IOException, SQLException{
+	public ArrayList<String> analyser(Connection con, String text) throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<>();
-		String[] cmd = {"python","/Users/Alex/Desktop/prueba.py",text.toLowerCase()};
-		Process p = Runtime.getRuntime().exec(cmd);
+		String[] cmd = {"python","/home/tfmpictar/SpacyService.py",text.toLowerCase()};
+		//String[] cmd = {"python","/Users/Alex/Desktop/SpacyService.py",text.toLowerCase()};
+	
+		Process p = null;
+		try {
+			p = Runtime.getRuntime().exec(cmd);
+		} catch (IOException e) {
+			System.out.println("Error");
+			e.printStackTrace();
+		}
 		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
         //BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
         String res = null;
         int init=0;
         while ((res = stdInput.readLine()) != null) {
         	if(init>0){
-        		res = convertHextoString(res);
+        		//res = convertHextoString(res);
         		res = filter(con,res);
         		result.add(res);
         	}
@@ -59,33 +68,45 @@ public class ExecuteScript {
 		result = result.replaceAll("\\(", "");
 		result = result.replaceAll("\\)", "");
 		String[] fields= result.split(" ");
-		String tag = fields[1].substring(2,fields[1].length()-2).toLowerCase();
+		//String tag = fields[1].substring(2,fields[1].length()-2).toLowerCase();
+		String tag = fields[1].toLowerCase();
 		result="";
 		if(tag.equalsIgnoreCase("noun")){
-			String word = fields[2].substring(2,fields[2].length()-2);
+			//String word = fields[2].substring(2,fields[2].length()-2);
+			String word = fields[2];
 			if(fields[3].contains("Number") && fields[3].contains("Plur")){
 				String aux = word.substring(word.length()-2,word.length());
-				if(word.substring(word.length()-2,word.length()).equalsIgnoreCase("es")){
-					String query = "SELECT * FROM palabras,pictogramas where palabras.nombre = '" + word.substring(0, word.length()-2) + "' and palabras.id_url = pictogramas.id_pictograma";
-		    		comando = con.createStatement();
-		            registro = comando.executeQuery(query);
-		            if(!registro.next()){
-		            	result = word.substring(0,word.length()-1) + " " + tag;
-		            }else{
-		            	result = word.substring(0,word.length()-2) + " " + tag;
-		            }
-				}else{
-					result = word.substring(0,word.length()-1) + " " + tag;
-				}
+				String query = "SELECT * FROM palabras,pictogramas where palabras.nombre = '" + word + "' and palabras.id_url = pictogramas.id_pictograma";
+	    		comando = con.createStatement();
+	            registro = comando.executeQuery(query);
+	            if(!registro.next()){
+					if(word.substring(word.length()-2,word.length()).equalsIgnoreCase("es")){
+						query = "SELECT * FROM palabras,pictogramas where palabras.nombre = '" + word.substring(0, word.length()-2) + "' and palabras.id_url = pictogramas.id_pictograma";
+			    		comando = con.createStatement();
+			            registro = comando.executeQuery(query);
+			            if(!registro.next()){
+			            	result = word.substring(0,word.length()-1) + " " + tag;
+			            }else{
+			            	result = word.substring(0,word.length()-2) + " " + tag;
+			            }
+					}else{
+			            result = word.substring(0,word.length()-1) + " " + tag;
+					}
+	            }else{
+	            	result = word + " " + tag;
+	            }
 			}else{
 				result = word + " " + tag;
 			}
+		}else if(tag.equalsIgnoreCase("adp")||tag.equalsIgnoreCase("num") || tag.equalsIgnoreCase("det")){
+			//result = fields[2].substring(2,fields[2].length()-2).toLowerCase() + " " + tag;
+			result = fields[2].toLowerCase() + " " + tag;
 		}else{
-			for(int i=0; i<2; i++){
-				result = result + fields[i].substring(2,fields[i].length()-2).toLowerCase() + " ";
-			}
+			//result = fields[0].substring(2,fields[0].length()-2).toLowerCase() + " " + tag;
+			result = fields[0].toLowerCase() + " " + tag;
 		}
-		return result;
+		//return result + " " + fields[2].substring(2,fields[2].length()-2);
+		return result + " " + fields[2];
 	}
 	
 	public static String convertHextoString(String result){
@@ -120,8 +141,8 @@ public class ExecuteScript {
 		DatabaseConnection dC = new DatabaseConnection();
 		Connection conBD = dC.MySQLConnect();
 		long startTime = System.nanoTime();
-		String frase = "La niña guapa mira el cielo";
-		String[] cmd = {"python","/Users/Alex/Desktop/prueba.py",frase.toLowerCase()};
+		String frase = "El tapiz de los regalices combinaban con las luces de los peces";
+		String[] cmd = {"python","/Users/Alex/Desktop/SpacyService.py",frase.toLowerCase()};
 		Process p = Runtime.getRuntime().exec(cmd);
 		String s = null;
 		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
